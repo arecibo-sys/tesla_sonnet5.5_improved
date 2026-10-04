@@ -238,7 +238,7 @@ $('bootGo').onclick=()=>{dismissBoot()};
 $('bootAudio').onclick=()=>{AudioEngine.start();dismissBoot()};
 
 /* ---------- Loader: local vendored Three.js first, CDN only as isolated fallback ---------- */
-const THREE_SOURCES=['vendor/three.min.js','https://cdnjs.cloudflare.com/ajax/libs/three.js/r158/three.min.js']; // swap/remove CDN entry for offline-only
+const THREE_SOURCES=['vendor/three.min.js','https://unpkg.com/three@0.158.0/build/three.min.js','https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js']; // swap/remove CDN entry for offline-only
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=res;s.onerror=()=>rej(new Error('load '+src));document.head.appendChild(s)})}
 (async function(){
  for(const src of THREE_SOURCES){try{await loadScript(src);if(window.THREE)break}catch(e){}}

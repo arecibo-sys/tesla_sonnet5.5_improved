@@ -124,8 +124,20 @@ select option{background:#10141a}
  #status{font-size:9px;padding:5px 10px}#stMain{font-size:9.5px}#stSub{font-size:8.5px}
  #alert{font-size:9px;padding:5px 10px}
  .lab,.card{font-size:9px}
- .drawer{left:0!important;right:0!important;top:auto!important;bottom:0!important;width:auto!important;max-height:68vh;border-radius:18px 18px 0 0!important;transform:translateY(40px)!important;padding-bottom:calc(18px + var(--sB))}
- select{max-width:140px}
+ .drawer{left:0!important;right:0!important;top:auto!important;bottom:0!important;width:auto!important;max-height:52vh;border-radius:18px 18px 0 0!important;transform:translateY(40px)!important;padding-bottom:calc(18px + var(--sB))}
+ .drawer{padding:10px 12px!important}
+ .drawer h3{font-size:9px;margin:0 0 8px}
+ .drawer h4{font-size:8.5px;margin:12px 0 6px}
+ .kv{font-size:10.5px;gap:4px 8px}
+ .row{font-size:10px;margin:0 0 8px;gap:8px}
+ .row label{font-size:8.5px}
+ .sens{font-size:9px;grid-template-columns:48px 1fr auto}
+ .sens canvas{height:14px}
+ .x{width:30px;height:30px;font-size:15px;right:6px;top:5px}
+ select,input[type=range]{min-height:30px;max-width:120px;font-size:10px}
+ input[type=range]{width:120px}
+ #dbg{font-size:8.5px;padding:6px 8px}
+ #sys,#set{padding-bottom:calc(64px + var(--sB))}
 }
 @media (max-height:480px) and (orientation:landscape){
  #navBox{width:170px}#mapBox{height:84px}#trip,#energy{display:none}#status{top:calc(44px + var(--sT))}

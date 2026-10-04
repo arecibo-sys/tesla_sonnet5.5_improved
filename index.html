@@ -105,6 +105,14 @@ select option{background:#10141a}
 #vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 55%,rgba(0,0,0,.45) 100%)}
 #flash{position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 90px rgba(255,93,85,0);transition:box-shadow .4s}
 #flash.amb{box-shadow:inset 0 0 90px rgba(255,179,71,.18)}#flash.red{box-shadow:inset 0 0 110px rgba(255,93,85,.3)}
+#drive{position:fixed;right:calc(14px + var(--sR));bottom:calc(84px + var(--sB));display:none;gap:14px;align-items:flex-end;touch-action:none}
+body.drv #drive{display:flex}
+#drive .pg{display:flex;gap:8px}
+#drive button{background:var(--g1);border:1px solid var(--ln);border-radius:14px;color:var(--ink);min-width:64px;min-height:64px;font:500 10px/1 inherit;letter-spacing:.14em;touch-action:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+#drive button.on{border-color:rgba(169,201,255,.7);background:rgba(169,201,255,.18)}
+#drive #pBrake.on{border-color:rgba(255,93,85,.7);background:rgba(255,93,85,.2)}
+#drive #pGas{min-height:84px}
+#setv{color:var(--blue)}
 /* tablet */
 @media (max-width:1000px){#navBox{width:196px}#mapBox{height:130px}#sys,#set{width:290px}}
 /* phone */
@@ -118,6 +126,7 @@ select option{background:#10141a}
  body.mapoff #mapBox{display:none}
  #speedBox{left:calc(8px + var(--sL));bottom:calc(72px + var(--sB));min-width:118px;padding:5px 9px 7px}
  #spd{font-size:36px}#limit{width:28px;height:28px;font-size:11px}
+ #drive{bottom:calc(44px + var(--sB));right:calc(8px + var(--sR));gap:8px}#drive button{min-width:52px;min-height:48px}#drive #pGas{min-height:64px}
  #ctrl{gap:2px;padding:3px;left:calc(8px + var(--sL));right:calc(8px + var(--sR));transform:none;justify-content:space-between;max-width:none;bottom:calc(0px + var(--sB))}
  #ctrl button{min-width:34px;flex:1;min-height:28px;padding:1px 1px;gap:1px;min-width:0!important}#ctrl .sec{display:none}
  #ctrl button b{font-size:7px;letter-spacing:.02em}#ctrl button small{font-size:6.5px;letter-spacing:.02em}
@@ -177,7 +186,7 @@ select option{background:#10141a}
  <div id="alert" role="alert"></div>
  <div id="paused" class="glass">SIMULATION PAUSED</div>
  <div id="speedBox" class="glass hideable"><div id="spdRow"><div id="spd" class="num">0</div><div id="spdU">KM/H</div><div id="limit" class="num">50</div></div>
-  <div id="gearRow"><span>GEAR <b id="gear">D</b></span><span>MODE <b id="dmode">AUTO</b></span><span id="hdw" class="num">GAP --</span></div></div>
+  <div id="gearRow"><span>GEAR <b id="gear">D</b></span><span>MODE <b id="dmode">AUTO</b></span><span id="hdw" class="num">GAP --</span><span id="setv" class="num"></span></div></div>
  <div id="navBox" class="hideable">
   <div id="man" class="glass" role="button" tabindex="0" aria-label="Next maneuver. Tap to toggle mini map"><div id="manIc">↑</div><div><div id="manD" class="num">--</div><div id="manT">--</div></div></div>
   <div id="mapBox" class="glass"><canvas id="map" width="420" height="340" aria-label="Mini map"></canvas></div>
@@ -187,7 +196,7 @@ select option{background:#10141a}
  </div>
  <nav id="ctrl" class="glass" aria-label="Simulation controls">
   <button id="bPause" aria-label="Pause or resume simulation"><b>PAUSE</b><small>RUN</small></button>
-  <button id="bAuto" aria-label="Toggle autonomous mode"><b>AUTO</b><small>ON</small></button>
+  <button id="bAuto" aria-label="Cycle drive mode: auto, assist, manual"><b>DRIVE</b><small>AUTO</small></button>
   <button id="bCam" aria-label="Change camera mode"><b>CAMERA</b><small>CHASE</small></button>
   <button id="bTraffic" aria-label="Change traffic density"><b>TRAFFIC</b><small>AUTO</small></button>
   <button id="bWx" class="sec" aria-label="Change weather"><b>WEATHER</b><small>AUTO</small></button>
@@ -197,6 +206,7 @@ select option{background:#10141a}
   <button id="bSys" aria-label="Open systems panel"><b>SYSTEMS</b><small>HIDE</small></button>
   <button id="bSet" aria-label="Open settings"><b>SETTINGS</b><small>···</small></button>
  </nav>
+ <div id="drive" aria-label="Driving controls"><div class="pg"><button id="pL" aria-label="Lane left">◀</button><button id="pR" aria-label="Lane right">▶</button></div><div class="pg"><button id="pBrake" aria-label="Brake">BRAKE</button><button id="pGas" aria-label="Accelerate">GAS</button></div></div>
  <div id="tierNote">ADAPTIVE QUALITY REDUCED</div>
 </div>
 
@@ -213,13 +223,15 @@ select option{background:#10141a}
  <div class="row"><label for="sTraffic">TRAFFIC</label><select id="sTraffic"><option>AUTO</option><option>SPARSE</option><option>NORMAL</option><option>DENSE</option><option>CONGESTION</option></select></div>
  <div class="row"><label for="sWx">WEATHER</label><select id="sWx"><option>AUTO</option><option>CLEAR</option><option>RAIN</option><option>FOG</option></select></div>
  <div class="row"><label for="sTod">TIME OF DAY</label><select id="sTod"><option>AUTO</option><option>DAY</option><option>DUSK</option><option>NIGHT</option></select></div>
+ <div class="row"><label for="sMode">DRIVE MODE</label><select id="sMode"><option value="AUTO">AUTO</option><option value="ASSIST">ASSIST</option><option value="MANUAL">MANUAL</option></select></div>
+ <div class="row"><label for="sAeb">EMERGENCY BRAKING</label><select id="sAeb"><option value="1">AEB ON</option><option value="0">AEB OFF</option></select></div>
  <div class="row"><label for="sHud">HUD DENSITY</label><select id="sHud"><option>FULL</option><option>MINIMAL</option></select></div>
  <div class="row"><label for="sSpeed">SIM SPEED</label><select id="sSpeed"><option value="0.5">0.5×</option><option value="1">1×</option><option value="2">2×</option></select></div>
  <div class="row"><label for="sVol">MASTER VOLUME</label><input id="sVol" type="range" min="0" max="1" step=".01"></div>
  <div class="row"><label for="sMusic">MUSIC LEVEL</label><input id="sMusic" type="range" min="0" max="1" step=".01"></div>
  <div class="row"><label for="sSens">SENSOR OVERLAY</label><input id="sSens" type="range" min="0.2" max="1" step=".01"></div>
  <div class="row"><label for="sDbg">DEBUG OVERLAY</label><select id="sDbg"><option value="0">OFF</option><option value="1">ON</option></select></div>
- <h4>KEYS</h4><div style="color:var(--dim);font-size:11px;line-height:1.7">SPACE pause · C camera · A autonomous · M mute · T traffic · W weather · H HUD · D debug</div>
+ <h4>KEYS</h4><div style="color:var(--dim);font-size:11px;line-height:1.7">SPACE pause · C camera · A drive mode (or 1 auto · 2 assist · 3 manual) · ↑ gas · ↓ brake · ←/→ or Q/E lane · +/− set speed · X AEB · M mute · T traffic · W weather · H HUD · D debug</div>
 </aside>
 <div id="hover" class="card glass"></div><div id="pin" class="card glass"></div>
 <div id="labs"></div>
@@ -245,8 +257,9 @@ const setT=(id,t)=>{const e=typeof id==='string'?$(id):id;if(e&&e.textContent!==
 
 /* ---------- Prefs ---------- */
 const PREF_KEY='mtc_sonnet55_prefs_v1';
-const prefs={quality:'AUTO',vol:.7,music:.6,sens:.8,hud:'FULL',speed:1,cam:0,traffic:'AUTO',weather:'AUTO',tod:'AUTO',auto:true,mute:false,dbg:0};
+const prefs={quality:'AUTO',vol:.7,music:.6,sens:.8,hud:'FULL',speed:1,cam:0,traffic:'AUTO',weather:'AUTO',tod:'AUTO',auto:true,mode:null,aeb:true,mute:false,dbg:0};
 try{Object.assign(prefs,JSON.parse(localStorage.getItem(PREF_KEY)||'{}'))}catch(e){}
+if(!['AUTO','ASSIST','MANUAL'].includes(prefs.mode))prefs.mode=prefs.auto===false?'MANUAL':'AUTO';prefs.auto=prefs.mode==='AUTO';
 const savePrefs=()=>{try{localStorage.setItem(PREF_KEY,JSON.stringify(prefs))}catch(e){}};
 
 /* ---------- Boot sequence (shown immediately, before 3D loads) ---------- */
@@ -991,18 +1004,30 @@ const egoNode=(function(){const grp=new THREE.Group();
  const cone=new THREE.Mesh(new THREE.ConeGeometry(1,1,24,1,true).rotateX(-Math.PI/2).translate(0,0,-.5),new THREE.MeshBasicMaterial({color:0xcfe2ff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));cone.position.set(0,.75,-2.3);cone.scale.set(5,4,30);cone.renderOrder=2;grp.add(cone);
  scene.add(grp);return{grp,wheels,tail,tm,rings,aura,fan,sweep,cone,bm,blob}})();
 ego.node=egoNode;
+const inp={thr:0,brk:0,thrH:0,brkH:0,lc:0},ctl={setV:0};
+function userLaneChange(d){
+ if(ego.lc)return false;const li=ego.lane+d;
+ if(li<0||li>2){sim.alertFn&&sim.alertFn('amb','NO LANE ON THAT SIDE');return false}
+ const g=laneGaps(LANES[li],ego,ego.s),safe=g.fg>8+ego.v*.4&&g.bg>7+Math.max(0,g.bv-ego.v)*2+ego.v*.15;
+ if(!safe&&(prefs.mode==='ASSIST'||prefs.aeb)){sim.alertFn&&sim.alertFn('amb','LANE NOT CLEAR · BLIND SPOT');return false}
+ ego.plan=null;ego.lc={from:ego.l,to:LANES[li],t:0,dur:2.8,reason:'manual'};ego.tl=LANES[li];ego.lane=li;sim.onLaneChange&&sim.onLaneChange();return true}
 function egoPlan(dt){
- const auto=prefs.auto,lim=ZK[zoneAt(ego.s)].limit/3.6;
+ const mode=prefs.mode,auto=mode==='AUTO',manAEB=mode==='MANUAL'&&prefs.aeb;
+ const k=Math.min(1,dt*5);inp.thr+=(inp.thrH-inp.thr)*k;inp.brk+=(inp.brkH-inp.brk)*Math.min(1,dt*8);
+ const lim=ZK[zoneAt(ego.s)].limit/3.6;
  const ld=leaderOfEgo();ego.leader=ld.b;ego.gap=ld.g;const sg=signalGap(ego);ego.sigGap=sg;
  let gap=ld.g,vL=ld.b?ld.b.v:0;if(sg<gap){gap=sg;vL=0}
  let v0=lim*.97*envSpeedFactor()*jamFactor(ego.s+Math.min(80,ego.v*3));
  if(ld.b&&ld.b.haz==='stall')v0=Math.min(v0,lim);
+ if(ctl.setV&&mode!=='MANUAL')v0=Math.min(v0,ctl.setV);
  let acc=idm(ego,v0,gap,vL,envHeadway()*.95);
  const closing=ego.v-vL,ttc=gap<Infinity&&closing>.5?gap/closing:99;
  let st=ego.state;const prev=st;
  const inInt=(()=>{for(const f of world.features)if(f.type==='int'&&ego.s>f.s0-70&&ego.s<f.s0+20)return true;return false})();
  // emergency
- if(ld.b&&ttc<1.9&&gap<30&&ego.v>5){acc=Math.min(acc,-7.5);st='EMERGENCY_BRAKE';ego.emerg=1.5}else if(ego.emerg>0&&acc<-3){st='EMERGENCY_BRAKE'}
+ if(ld.b&&ttc<1.9&&gap<30&&ego.v>5&&(mode!=='MANUAL'||prefs.aeb)){acc=Math.min(acc,-7.5);st='EMERGENCY_BRAKE';ego.emerg=1.5}
+ else if(manAEB&&sg<Infinity&&ego.v>3&&ego.v*ego.v/(2*Math.max(sg-3,.4))>7){acc=-7.5;st='EMERGENCY_BRAKE';ego.emerg=1.2}
+ else if(ego.emerg>0&&acc<-3&&(mode!=='MANUAL'||prefs.aeb)){st='EMERGENCY_BRAKE'}
  else if(sg<Infinity&&(!ld.b||sg<=ld.g)){st=(ego.v<.5&&sg<10)?'WAIT_AT_SIGNAL':'STOP_FOR_SIGNAL'}
  else if(ego.lc){st=ego.lc.reason==='merge'?'MERGE':ego.lc.reason==='avoid'?'AVOID':'CHANGE_LANE'}
  else if(st==='PREPARE_LANE_CHANGE'||st==='CHECK_GAP'){/* handled below */}
@@ -1037,6 +1062,7 @@ function egoPlan(dt){
     else if(ego.plan.t>7.5){ego.plan=null;ego.lcCool=6;st='FOLLOW'}}
   }}
  if(!auto&&(ego.state==='PREPARE_LANE_CHANGE'||ego.state==='CHECK_GAP')){ego.plan=null;st='CRUISE'}
+ if(inp.lc){const d=inp.lc;inp.lc=0;if(!auto&&st!=='EMERGENCY_BRAKE'&&userLaneChange(d))st='CHANGE_LANE'}
  if(ego.lc){ego.lc.t+=dt;const k=sstep(0,ego.lc.dur,ego.lc.t);ego.l=lerp(ego.lc.from,ego.lc.to,k);if(ego.lc.t>=ego.lc.dur){ego.l=ego.lc.to;ego.lc=null;ego.lcCool=14;ego.plan=null;st='CRUISE'}}
  // conflict prediction on planned path
  ego.conflict=false;
@@ -1044,6 +1070,12 @@ function egoPlan(dt){
   for(const a of same){if(!a.active||a.cross)continue;for(let t=0;t<=4;t+=.5){const le=lerp(l0,tl,sstep(0,3.6,el+(ego.plan&&!ego.lc?t+1.5:t)));const la=a.lc?lerp(a.lc.from,a.lc.to,sstep(0,a.lc.dur,a.lc.t+t)):a.l;
     const ds=(a.s+a.v*t)-(ego.s+ego.v*t);if(Math.abs(ds)<(a.len+ego.len)/2+4&&Math.abs(la-le)<2.5){ego.conflict=true;break}}if(ego.conflict)break}}
  if(!auto)ego.conflict=false;
+ // driver input (ASSIST: ACC + driver steering/pedal override; MANUAL: pedals only, AEB optional)
+ if(!auto&&st!=='EMERGENCY_BRAKE'){
+  const vCap=lim*1.5,gas=3*inp.thr*(1-Math.pow(ego.v/vCap,3)),brk=-1.2-6*inp.brk;
+  if(mode==='MANUAL'){acc=inp.brk>.02?brk:inp.thr>.02?gas:-(.3+.0004*ego.v*ego.v);if(!ego.lc)st='CRUISE'}
+  else{if(inp.thr>.02)acc=Math.max(acc,gas);if(inp.brk>.02)acc=Math.min(acc,brk)}
+ }
  ego.state=st;
  if(st!==prev){ego.stateT=0;sim.onState&&sim.onState(st,prev)}else ego.stateT+=dt;
  if(ego.emerg>0)ego.emerg-=dt;
@@ -1177,7 +1209,13 @@ const CAMNAMES=['CHASE','TACTICAL','TOP DOWN','CINEMATIC'],WXN=['AUTO','CLEAR','
 function cycle(arr,v){return arr[(arr.indexOf(v)+1)%arr.length]}
 const act={
  pause(){sim.pause=!sim.pause;document.body.classList.toggle('paused',sim.pause);AudioEngine.paused=sim.pause;AudioEngine.apply();AudioEngine.click();refreshCtl()},
- auto(){prefs.auto=!prefs.auto;if(prefs.auto)AudioEngine.engage();else AudioEngine.disengage();savePrefs();refreshCtl()},
+ mode(m,quiet){const M=['AUTO','ASSIST','MANUAL'];m=m||M[(M.indexOf(prefs.mode)+1)%3];if(m===prefs.mode)return;const was=prefs.mode;prefs.mode=m;prefs.auto=m==='AUTO';ego.plan=null;inp.thrH=inp.brkH=inp.lc=0;if(m==='MANUAL')ctl.setV=0;
+  if(!quiet){if(m==='AUTO')AudioEngine.engage();else AudioEngine.disengage()}document.body.classList.toggle('drv',m!=='AUTO');
+  sim.alertFn&&sim.alertFn('amb',m==='AUTO'?'AUTONOMOUS ENGAGED':m==='ASSIST'?'DRIVER ASSIST · YOU STEER':'MANUAL · YOU DRIVE');savePrefs();refreshCtl()},
+ auto(){act.mode()},
+ aeb(v){prefs.aeb=v==null?!prefs.aeb:!!v;AudioEngine.click();sim.alertFn&&sim.alertFn('amb','EMERGENCY BRAKING '+(prefs.aeb?'ON':'OFF'));savePrefs();refreshCtl()},
+ setSpeed(d){if(prefs.mode==='MANUAL')return;const lim=ZK[zoneAt(ego.s)].limit;const cur=ctl.setV?ctl.setV*3.6:Math.max(5,Math.round(ego.v*3.6/5)*5);ctl.setV=clamp(Math.round(cur/5)*5+d*5,10,lim*1.4)/3.6;AudioEngine.click()},
+ steer(d){if(prefs.mode==='AUTO')act.mode('ASSIST');inp.lc=d},
  cam(n){prefs.cam=n==null?(prefs.cam+1)%4:n;camSt.blend=0;AudioEngine.cam();if(prefs.cam!==1)camSt.orbY=camSt.orbP=0;savePrefs();refreshCtl()},
  traffic(v){prefs.traffic=v||cycle(TRN,prefs.traffic);AudioEngine.click();savePrefs();refreshCtl()},
  weather(v){prefs.weather=v||cycle(WXN,prefs.weather);AudioEngine.click();savePrefs();refreshCtl()},
@@ -1189,9 +1227,9 @@ const act={
  dbg(){prefs.dbg=prefs.dbg?0:1;$('dbg').style.display=prefs.dbg?'block':'none';savePrefs();refreshCtl()}};
 function refreshCtl(){
  const st=(id,on,txt,warn)=>{const b=$(id);b.classList.toggle('on',!!on);b.classList.toggle('warn',!!warn);setT(b.querySelector('small'),txt)};
- st('bPause',sim.pause,sim.pause?'PAUSED':'RUN');st('bAuto',prefs.auto,prefs.auto?'ON':'OFF');st('bCam',true,CAMNAMES[prefs.cam]);st('bTraffic',prefs.traffic!=='AUTO',prefs.traffic);st('bWx',prefs.weather!=='AUTO',prefs.weather);st('bTod',prefs.tod!=='AUTO',prefs.tod);
+ st('bPause',sim.pause,sim.pause?'PAUSED':'RUN');st('bAuto',prefs.mode==='AUTO',prefs.mode,prefs.mode==='MANUAL');st('bCam',true,CAMNAMES[prefs.cam]);st('bTraffic',prefs.traffic!=='AUTO',prefs.traffic);st('bWx',prefs.weather!=='AUTO',prefs.weather);st('bTod',prefs.tod!=='AUTO',prefs.tod);
  st('bSound',AudioEngine.on&&!AudioEngine.muted,!AudioEngine.on?'OFF':AudioEngine.muted?'MUTED':'ON');st('bHud',prefs.hud!=='FULL',prefs.hud);st('bSys',$('sys').classList.contains('open'),$('sys').classList.contains('open')?'OPEN':'HIDE');st('bSet',$('set').classList.contains('open'),'···');
- $('bPause').setAttribute('aria-pressed',sim.pause);$('bAuto').setAttribute('aria-pressed',prefs.auto);
+ $('bPause').setAttribute('aria-pressed',sim.pause);$('bAuto').setAttribute('aria-pressed',prefs.mode==='AUTO');$('sMode').value=prefs.mode;$('sAeb').value=prefs.aeb?'1':'0';$('pGas').classList.toggle('on',!!inp.thrH);$('pBrake').classList.toggle('on',!!inp.brkH);document.body.classList.toggle('drv',prefs.mode!=='AUTO');
  $('audioChip').style.display=(!AudioEngine.on&&bootDone)?'block':'none';
  $('sQuality').value=prefs.quality;$('sCam').value=prefs.cam;$('sTraffic').value=prefs.traffic;$('sWx').value=prefs.weather;$('sTod').value=prefs.tod;$('sHud').value=prefs.hud;$('sSpeed').value=String(prefs.speed);$('sVol').value=prefs.vol;$('sMusic').value=prefs.music;$('sSens').value=prefs.sens;$('sDbg').value=String(prefs.dbg);
  setT('tierTag',(prefs.quality==='AUTO'?'AUTO · ':'')+tierName+(perf.stage?'↓':''))}
@@ -1199,11 +1237,18 @@ $('bPause').onclick=act.pause;$('bAuto').onclick=act.auto;$('bCam').onclick=()=>
 $('audioChip').onclick=()=>{AudioEngine.start();AudioEngine.mute(false);prefs.mute=false;refreshCtl()};
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{$(b.dataset.close).classList.remove('open');refreshCtl()});
 $('man').onclick=()=>{document.body.classList.toggle('mapoff');AudioEngine.click()};
-$('sQuality').onchange=e=>{prefs.quality=e.target.value;setQuality();savePrefs();refreshCtl()};$('sCam').onchange=e=>act.cam(+e.target.value);$('sTraffic').onchange=e=>act.traffic(e.target.value);$('sWx').onchange=e=>act.weather(e.target.value);$('sTod').onchange=e=>act.tod(e.target.value);$('sHud').onchange=e=>act.hud(e.target.value);
+$('sQuality').onchange=e=>{prefs.quality=e.target.value;setQuality();savePrefs();refreshCtl()};$('sCam').onchange=e=>act.cam(+e.target.value);$('sTraffic').onchange=e=>act.traffic(e.target.value);$('sWx').onchange=e=>act.weather(e.target.value);$('sTod').onchange=e=>act.tod(e.target.value);$('sHud').onchange=e=>act.hud(e.target.value);$('sMode').onchange=e=>act.mode(e.target.value);$('sAeb').onchange=e=>act.aeb(e.target.value==='1');
 $('sSpeed').onchange=e=>{prefs.speed=+e.target.value;AudioEngine.rhythm=prefs.speed===2?1.1:prefs.speed===.5?.92:1;savePrefs()};
 $('sVol').oninput=e=>{prefs.vol=+e.target.value;AudioEngine.vol=prefs.vol;AudioEngine.apply();savePrefs()};$('sMusic').oninput=e=>{prefs.music=+e.target.value;AudioEngine.music=prefs.music;AudioEngine.apply();savePrefs()};$('sSens').oninput=e=>{prefs.sens=+e.target.value;savePrefs()};$('sDbg').onchange=e=>{prefs.dbg=+e.target.value;$('dbg').style.display=prefs.dbg?'block':'none';savePrefs()};
+const press=(id,fn)=>{const b=$(id);const on=e=>{e.preventDefault();b.setPointerCapture&&b.setPointerCapture(e.pointerId);fn(true);refreshCtl()},off=e=>{fn(false);refreshCtl()};b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('lostpointercapture',off)};
+const gas=v=>{inp.thrH=v?1:0;refreshCtl()},brake=v=>{if(v&&prefs.mode==='AUTO')act.mode('ASSIST');inp.brkH=v?1:0;refreshCtl()};
+press('pGas',gas);press('pBrake',brake);press('pL',v=>{if(v)act.steer(-1)});press('pR',v=>{if(v)act.steer(1)});
+addEventListener('blur',()=>{inp.thrH=inp.brkH=0});
+document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(k==='arrowup')gas(false);else if(k==='arrowdown')brake(false)});
 document.addEventListener('keydown',e=>{if(e.target&&/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)&&e.key!==' ')return;if(e.target&&e.target.tagName==='SELECT')return;const k=e.key.toLowerCase();
- if(k===' '){e.preventDefault();act.pause()}else if(k==='c')act.cam();else if(k==='a')act.auto();else if(k==='m')act.sound();else if(k==='t')act.traffic();else if(k==='w')act.weather();else if(k==='h')act.hud();else if(k==='d')act.dbg();else if(k==='escape'){$('sys').classList.remove('open');$('set').classList.remove('open');refreshCtl()}});
+ if(k===' '){e.preventDefault();act.pause()}else if(k==='arrowup'){e.preventDefault();gas(true)}else if(k==='arrowdown'){e.preventDefault();brake(true)}else if(k==='arrowleft'||k==='q'){e.preventDefault();if(!e.repeat)act.steer(-1)}else if(k==='arrowright'||k==='e'){e.preventDefault();if(!e.repeat)act.steer(1)}
+ else if(k==='+'||k==='=')act.setSpeed(1);else if(k==='-'||k==='_')act.setSpeed(-1);else if(k==='x')act.aeb();else if(k==='1')act.mode('AUTO');else if(k==='2')act.mode('ASSIST');else if(k==='3')act.mode('MANUAL');
+ else if(k==='c')act.cam();else if(k==='a')act.auto();else if(k==='m')act.sound();else if(k==='t')act.traffic();else if(k==='w')act.weather();else if(k==='h')act.hud();else if(k==='d')act.dbg();else if(k==='escape'){$('sys').classList.remove('open');$('set').classList.remove('open');refreshCtl()}});
 document.addEventListener('audiostate',refreshCtl);
 AudioEngine.vol=prefs.vol;AudioEngine.music=prefs.music;AudioEngine.muted=prefs.mute;AudioEngine.rhythm=prefs.speed===2?1.1:prefs.speed===.5?.92:1;
 document.body.classList.toggle('nohud',prefs.hud!=='FULL');$('dbg').style.display=prefs.dbg?'block':'none';
@@ -1301,14 +1346,14 @@ function syncNodes(dt,t){
 }
 function updateHUD(dt,t){
  const v=Math.round(ego.v*3.6);setT('spd',String(v));const lim=ZK[zoneAt(ego.s)].limit;setT('limit',String(lim));
- setT('gear',ego.v<.3&&ego.state==='WAIT_AT_SIGNAL'?'D·HOLD':'D');setT('dmode',prefs.auto?'AUTO':'MANUAL');
+ setT('gear',ego.v<.3&&ego.state==='WAIT_AT_SIGNAL'?'D·HOLD':'D');setT('dmode',prefs.mode);setT('setv',ctl.setV&&prefs.mode!=='MANUAL'?'SET '+Math.round(ctl.setV*3.6):'');
  const gp=ego.gap<150?Math.round(ego.gap)+' m':'—';setT('hdw','GAP '+gp);
  // status
- const stEl=$('status');let main=prefs.auto?'AUTONOMOUS ACTIVE':'AUTONOMOUS OFF',sub;let cls='';
- if(!prefs.auto){sub='MANUAL OVERRIDE';cls='off'}
- else{sub=STATE_TXT[ego.state];if(!sub){sub=zoneAt(ego.s)==='city'?'CITY TRAFFIC':'NAVIGATION ENGAGED'}
+ const md=prefs.mode,stEl=$('status');let main=md==='AUTO'?'AUTONOMOUS ACTIVE':md==='ASSIST'?'DRIVER ASSIST':'MANUAL DRIVING',sub;let cls='';
+ if(md==='MANUAL'){sub='DRIVER IN CONTROL · AEB '+(prefs.aeb?'ON':'OFF');cls=prefs.aeb?'':'amb'}
+ else{sub=STATE_TXT[ego.state];if(!sub){sub=md==='ASSIST'?'ADAPTIVE CRUISE · YOU STEER':zoneAt(ego.s)==='city'?'CITY TRAFFIC':'NAVIGATION ENGAGED'}
   if(ego.state==='EMERGENCY_BRAKE')cls='red';else if(['AVOID','YIELD','SLOW_FOR_TRAFFIC'].includes(ego.state)||ego.conflict)cls='amb'}
- if(!prefs.auto&&ego.state==='EMERGENCY_BRAKE'){sub='EMERGENCY BRAKE';cls='red'}
+ if(md!=='AUTO'&&ego.state==='EMERGENCY_BRAKE'){sub='EMERGENCY BRAKE';cls='red'}
  stEl.className='glass '+cls;setT('stMain',main);setT('stSub',sub);setT('stRaw','STATE · '+ego.state);
  setT('scen','SIM · '+segName+(prefs.speed!==1?' · '+prefs.speed+'×':''));
  setT('clock',new Date().toTimeString().slice(0,5));setT('batTop',Math.round(energy.soc)+'%');
